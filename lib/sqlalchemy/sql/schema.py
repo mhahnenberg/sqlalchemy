@@ -598,6 +598,9 @@ class Table(DialectKWArgs, SchemaItem, TableClause):
     def _init_collections(self):
         pass
 
+    def _reset_exported(self):
+        pass
+
     @property
     def _autoincrement_column(self):
         return self.primary_key._autoincrement_column
@@ -2502,7 +2505,10 @@ class ColumnCollectionMixin(object):
         for expr in expressions:
             strname = None
             column = None
-            if not isinstance(expr, ClauseElement):
+            if hasattr(expr, '__clause_element__'):
+                expr = expr.__clause_element__()
+
+            if not isinstance(expr, (ColumnElement, TextClause)):
                 # this assumes a string
                 strname = expr
             else:
@@ -3281,12 +3287,14 @@ class Index(DialectKWArgs, ColumnCollectionMixin, SchemaItem):
         self.table = None
 
         columns = []
+        processed_expressions = []
         for expr, column, strname, add_element in self.\
                 _extract_col_expression_collection(expressions):
             if add_element is not None:
                 columns.append(add_element)
+            processed_expressions.append(expr)
 
-        self.expressions = expressions
+        self.expressions = processed_expressions
         self.name = quoted_name(name, kw.pop("quote", None))
         self.unique = kw.pop('unique', False)
         if 'info' in kw:

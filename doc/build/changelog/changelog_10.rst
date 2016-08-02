@@ -16,6 +16,28 @@
         :start-line: 5
 
 .. changelog::
+    :version: 1.0.15
+
+    .. change::
+        :tags: bug, sql
+        :tickets: 3755
+
+        Fixed bug in :class:`.Table` where the internal method
+        ``_reset_exported()`` would corrupt the state of the object.  This
+        method is intended for selectable objects and is called by the ORM
+        in some cases; an erroneous mapper configuration would could lead the
+        ORM to call this on on a :class:`.Table` object.
+
+    .. change::
+        :tags: bug, ext
+        :tickets: 3743
+
+        Fixed bug in ``sqlalchemy.ext.baked`` where the unbaking of a
+        subquery eager loader query would fail due to a variable scoping
+        issue, when multiple subquery loaders were involved.  Pull request
+        courtesy Mark Hahnenberg.
+
+.. changelog::
     :version: 1.0.14
     :released: July 6, 2016
 

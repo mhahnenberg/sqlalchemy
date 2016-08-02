@@ -19,13 +19,79 @@
         :start-line: 5
 
 .. changelog::
+    :version: 1.1.0
+
+    .. change::
+        :tags: change, orm
+
+        Passing False to :meth:`.Query.order_by` in order to cancel
+        all order by's is deprecated; there is no longer any difference
+        between calling this method with False or with None.
+
+    .. change::
+        :tags: feature, orm
+
+        The :meth:`.Query.group_by` method now resets the group by collection
+        if an argument of ``None`` is passed, in the same way that
+        :meth:`.Query.order_by` has worked for a long time.  Pull request
+        courtesy Iuri Diniz.
+
+    .. change::
+        :tags: bug, sql
+        :tickets: 3763
+
+        Fixed bug where :class:`.Index` would fail to extract columns from
+        compound SQL expressions if those SQL expressions were wrapped inside
+        of an ORM-style ``__clause_element__()`` construct.  This bug
+        exists in 1.0.x as well, however in 1.1 is more noticeable as
+        hybrid_property @expression now returns a wrapped element.
+
+.. changelog::
     :version: 1.1.0b3
+    :released: July 26, 2016
+
+    .. change::
+        :tags: change, orm
+        :tickets: 3749
+
+        Removed a warning that dates back to 0.4 which emits when a same-named
+        relationship is placed on two mappers that inherits via joined or
+        single table inheritance.   The warning does not apply to the
+        current unit of work implementation.
+
+        .. seealso::
+
+            :ref:`change_3749`
+
+
+    .. change::
+        :tags: bug, sql
+        :tickets: 3745
+
+        Fixed bug in new CTE feature for update/insert/delete stated
+        as a CTE inside of an enclosing statement (typically SELECT) whereby
+        oninsert and onupdate values weren't called upon for the embedded
+        statement.
+
+    .. change::
+        :tags: bug, sql
+        :tickets: 3744
+
+        Fixed bug in new CTE feature for update/insert/delete whereby
+        an anoymous (e.g. no name passed) :class:`.CTE` construct around
+        the statement would fail.
 
     .. change::
         :tags: bug, ext
 
         sqlalchemy.ext.indexable will intercept IndexError as well
         as KeyError when raising as AttributeError.
+
+    .. change::
+        :tags: feature, ext
+
+        Added a "default" parameter to the new sqlalchemy.ext.indexable
+        extension.
 
 .. changelog::
     :version: 1.1.0b2
